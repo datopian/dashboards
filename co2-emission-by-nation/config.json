@@ -1,0 +1,177 @@
+{
+  "widgets": [
+    {
+      "elementId": "co2-emission-by-nation",
+      "view": {
+        "resources": [
+          {
+            "datasetId": "co2-fossil-by-nation",
+            "name": "fossil-fuel-co2-emissions-by-nation",
+            "transform": [
+              {
+                "expression": "data['Year'] == 2014",
+                "type": "filter"
+              },
+              {
+                "expression": "data['Per Capita'] > 2.0",
+                "type": "filter"
+              }
+            ]
+          }
+        ],
+        "specType": "vega",
+        "spec": {
+          "$schema": "https://vega.github.io/schema/vega/v4.json",
+          "axes": [
+            {
+              "labelPadding": 4,
+              "orient": "left",
+              "scale": "yscale",
+              "tickSize": 0,
+              "zindex": 1
+            },
+            {
+              "orient": "bottom",
+              "scale": "xscale"
+            }
+          ],
+          "data": [
+            {
+              "name": "fossil-fuel-co2-emissions-by-nation"
+            }
+          ],
+          "height": 700,
+          "marks": [
+            {
+              "encode": {
+                "enter": {
+                  "y": {
+                    "field": "Country",
+                    "scale": "yscale"
+                  }
+                }
+              },
+              "from": {
+                "facet": {
+                  "data": "fossil-fuel-co2-emissions-by-nation",
+                  "groupby": "Country",
+                  "name": "facet"
+                }
+              },
+              "marks": [
+                {
+                  "encode": {
+                    "enter": {
+                      "height": {
+                        "band": 1,
+                        "scale": "pos"
+                      },
+                      "x": {
+                        "field": "Per Capita",
+                        "scale": "xscale"
+                      },
+                      "x2": {
+                        "scale": "xscale",
+                        "value": 0
+                      },
+                      "y": {
+                        "field": "position",
+                        "scale": "pos"
+                      }
+                    }
+                  },
+                  "from": {
+                    "data": "facet"
+                  },
+                  "name": "bars",
+                  "type": "rect"
+                },
+                {
+                  "encode": {
+                    "enter": {
+                      "align": {
+                        "value": "right"
+                      },
+                      "baseline": {
+                        "value": "middle"
+                      },
+                      "fill": {
+                        "value": "white"
+                      },
+                      "x": {
+                        "field": "x2",
+                        "offset": -5
+                      },
+                      "y": {
+                        "field": "y",
+                        "offset": {
+                          "field": "height",
+                          "mult": 0.5
+                        }
+                      }
+                    }
+                  },
+                  "from": {
+                    "data": "bars"
+                  },
+                  "type": "text"
+                }
+              ],
+              "scales": [
+                {
+                  "domain": {
+                    "data": "facet",
+                    "field": "position"
+                  },
+                  "name": "pos",
+                  "range": "height",
+                  "type": "band"
+                }
+              ],
+              "signals": [
+                {
+                  "name": "height",
+                  "update": "bandwidth('yscale')"
+                }
+              ],
+              "type": "group"
+            }
+          ],
+          "padding": 5,
+          "scales": [
+            {
+              "domain": {
+                "data": "fossil-fuel-co2-emissions-by-nation",
+                "field": "Country",
+                "sort": {
+                  "field": "Per Capita",
+                  "op": "max"
+                }
+              },
+              "name": "yscale",
+              "padding": 0.01,
+              "range": "height",
+              "type": "band"
+            },
+            {
+              "domain": {
+                "data": "fossil-fuel-co2-emissions-by-nation",
+                "field": "Per Capita"
+              },
+              "name": "xscale",
+              "nice": true,
+              "range": "width",
+              "round": true,
+              "type": "linear",
+              "zero": true
+            }
+          ],
+          "width": 700
+        }
+      }
+    }
+  ],
+  "datasets": [
+    "https://datahub.io/core/co2-fossil-by-nation"
+  ]
+}
